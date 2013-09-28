@@ -56,10 +56,10 @@ public:
     void StartAccept();
 
     //! Start async write operation
-    void WriteAsync(const Connection* conn, void* data, std::size_t size);
+    void AsyncWrite(const Connection* conn, void* data, std::size_t size);
 
     //! Start async read operation
-    void ReadAsync(const Connection* conn);
+    void AsyncRead(const Connection* conn);
 
     //! Run the server
     void Run();

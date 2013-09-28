@@ -53,10 +53,10 @@ public:
     void Init(const char* address, unsigned port);
 
     //! Start async write operation
-    void WriteAsync(void* data, std::size_t size);
+    void AsyncWrite(void* data, std::size_t size);
 
     //! Start async read operation
-    void ReadAsync();
+    void AsyncRead();
 
     //! Run the server
     void Run();

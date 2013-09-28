@@ -169,7 +169,7 @@ void Server::Run()
     }
 }
 
-void Server::ReadAsync(const Connection* conn)
+void Server::AsyncRead(const Connection* conn)
 {
     CheckInited();
 
@@ -189,7 +189,7 @@ void Server::ReadAsync(const Connection* conn)
     );
 }
 
-void Server::WriteAsync(const Connection* conn, void* data, std::size_t size)
+void Server::AsyncWrite(const Connection* conn, void* data, std::size_t size)
 {
     CheckInited();
 
@@ -198,7 +198,7 @@ void Server::WriteAsync(const Connection* conn, void* data, std::size_t size)
     if (mutable_conn->GetWriteBufferSize() < size)
         mutable_conn->ResizeWriteBuffer(size);
 
-    memcpy(mutable_conn->GetWriteBuffer(), data, size);
+    memcpy_s(mutable_conn->GetWriteBuffer(), mutable_conn->GetWriteBufferSize(), data, size);
 
     mutable_conn->SetSentBytes(0);
     mutable_conn->SetTotalBytes(size);

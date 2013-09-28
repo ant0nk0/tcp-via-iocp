@@ -25,7 +25,6 @@ void App::Run()
 void App::OnConnected(const Networking::Connection* /*conn*/)
 {
     LOG_DEBUG("Connected to server");
-
     SendNextValue();
 }
 
@@ -36,8 +35,8 @@ void App::OnDisconnected(const Networking::Connection* /*conn*/)
 
 void App::OnRead(const Networking::Connection* conn, void* data, std::size_t size)
 {
-    if (size != sizeof(Networking::Types::ResultType))
-        return;
+//    if (size != sizeof(Networking::Types::ResultType))
+//        return;
 
     auto value = *reinterpret_cast<Networking::Types::ResultType*>(data);
     LOG_DEBUG("Got new data. Size: " << size << ", data: " << value);
@@ -47,17 +46,12 @@ void App::OnRead(const Networking::Connection* conn, void* data, std::size_t siz
 
 void App::SendNextValue()
 {
-    auto next = Generate();
-    client.WriteAsync(&next, sizeof(next));
-}
-
-Networking::Types::InputType App::Generate()
-{
-    return rand() % 1024;
+    Networking::Types::InputType next = rand() % 1024;
+    client.AsyncWrite(&next, sizeof(next));
 }
 
 void App::OnWrite(const Networking::Connection* conn, std::size_t bytes_transferred)
 {
     LOG_DEBUG("Successfully written " << bytes_transferred << " bytes");
-    client.ReadAsync();
+    client.AsyncRead();
 }

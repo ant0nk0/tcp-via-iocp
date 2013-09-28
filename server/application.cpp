@@ -49,7 +49,7 @@ void App::Run()
 void App::OnWrite(const Networking::Connection* conn, std::size_t bytes_transferred)
 {
     LOG_DEBUG("Successfully written " << bytes_transferred << " bytes");
-    server.ReadAsync(conn);
+    server.AsyncRead(conn);
 }
 
 void App::OnRead(const Networking::Connection* conn, void* data, std::size_t size)
@@ -58,7 +58,7 @@ void App::OnRead(const Networking::Connection* conn, void* data, std::size_t siz
     LOG_DEBUG("Got new data. Size: " << size << ", data: " << value);
 
     Networking::Types::ResultType result = tree.AddNewValueAndCalculateRms(value);
-    server.WriteAsync(conn, &result, sizeof(result));
+    server.AsyncWrite(conn, &result, sizeof(result));
 }
 
 void App::OnClientDisconnected(const Networking::Connection* /*conn*/)
@@ -69,5 +69,5 @@ void App::OnClientDisconnected(const Networking::Connection* /*conn*/)
 void App::OnClientConnected(const Networking::Connection* conn)
 {
     LOG_DEBUG("New client connected");
-    server.ReadAsync(conn);
+    server.AsyncRead(conn);
 }
