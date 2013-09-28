@@ -11,7 +11,6 @@ namespace Networking
 {
 
 Client::Client()
-    : _winsock(WinSockInitializer::Create())
 {
 }
 
@@ -24,7 +23,7 @@ void Client::Init(const char* address, unsigned port)
     // Check WinSock initialized
     WSA_CHECK
     (
-        _winsock->IsInitialized(),
+        _winsock.IsInitialized(),
         "Unsupported version of WinSock"
     );
 

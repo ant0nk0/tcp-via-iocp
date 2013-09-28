@@ -18,7 +18,7 @@ class Connection;
 class Server
 {
     //! Helper for winsock initialization
-    WinSockInitializer::Ptr _winsock;
+    WinSockInitializer _winsock;
 
     //! Listening socket
     Socket _socket;

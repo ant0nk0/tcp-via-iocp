@@ -18,7 +18,7 @@ class Connection;
 class Client
 {
     //! Helper for winsock initialization
-    WinSockInitializer::Ptr _winsock;
+    WinSockInitializer _winsock;
 
     //! The Socket for outgoing connection
     Socket _socket;
