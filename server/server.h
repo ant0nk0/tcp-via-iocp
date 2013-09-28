@@ -1,7 +1,13 @@
 #pragma once
 
-#include <WinSock2.h>
 #include "socket.h"
+#include <cstddef>
+#include <WinSock2.h>
+#include <mswsock.h>
+#include <functional>
+
+// forward declarations
+class Connection;
 
 //! Asynchronous Tcp server based on IO Completion ports
 class Server
@@ -45,7 +51,7 @@ public:
     ~Server();
 
     //! Initialization. Must be called before any other method
-    void Init(const std::string& address, unsigned port);
+    void Init(const char* address, unsigned port);
 
     //! Start async wait for new connections
     void StartAccept();

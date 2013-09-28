@@ -1,19 +1,6 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <iostream>
-#include <functional>
-#include <sstream>
-
 #include <WinSock2.h>
-#pragma comment(lib,"ws2_32.lib")
-#include <mswsock.h>
-
-#include "guard.h"
-#include "exceptions.h"
-#include "connection.h"
-
 
 class Socket
 {
@@ -25,6 +12,6 @@ public:
     ~Socket();
 
     SOCKET& GetSocket();
-    unsigned long ResolveAddress(const std::string& address);
-    void Init(const std::string& address, unsigned port);
+    unsigned long ResolveAddress(const char* address);
+    void Init(const char* address, unsigned port);
 };

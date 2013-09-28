@@ -54,13 +54,13 @@ namespace Utils
         //! Add new value to the tree. Returns false if value already exist, true otherwise
         bool Add(const T& element)
         {
-            return TryAddToNode(&root_, element);
+            return AddInternal(&root_, element);
         }
 
         //! Walk around the tree and call 'func' for every node's value
         void Walk(WalkFunc&& func) const
         {
-            WalkFromNode(root_, func);
+            WalkInternal(root_, func);
         }
 
     private:
@@ -69,7 +69,7 @@ namespace Utils
         void operator = (const BinaryTree&);
 
         //! Recursive find tree node to add new element to. Search starts from 'node'. Returns false if value already exist, true otherwise
-        bool TryAddToNode(Node** node, const T& element)
+        bool AddInternal(Node** node, const T& element)
         {
             if (*node == nullptr)
             {
@@ -82,18 +82,18 @@ namespace Utils
             if (element == node_ptr->value_)
                 return false;
 
-            return TryAddToNode(element < node_ptr->value_ ? &node_ptr->left_ : &node_ptr->right_, element);
+            return AddInternal(element < node_ptr->value_ ? &node_ptr->left_ : &node_ptr->right_, element);
         }
 
         //! Recursive tree walker. Starts from 'node'
-        void WalkFromNode(typename const Node* const node, WalkFunc& func) const
+        void WalkInternal(typename const Node* const node, WalkFunc& func) const
         {
             if (node == nullptr)
                 return;
 
-            WalkFromNode(node->left_, func);
+            WalkInternal(node->left_, func);
             func(node->value_);
-            WalkFromNode(node->right_, func);
+            WalkInternal(node->right_, func);
         }
     };
 

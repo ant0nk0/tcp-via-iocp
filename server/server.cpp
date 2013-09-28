@@ -1,8 +1,11 @@
 #include "server.h"
 #include "overlapped.h"
+#include "exceptions.h"
+#include "connection.h"
+
+#include <memory>
 #include <WinSock2.h>
 #include <Windows.h>
-
 
 Server::Server()
     : _acceptex_func(nullptr)
@@ -17,7 +20,7 @@ Server::~Server()
         WSACleanup();
 }
 
-void Server::Init(const std::string& address, unsigned port)
+void Server::Init(const char* address, unsigned port)
 {
     // Check WSA version
     WSA_CHECK

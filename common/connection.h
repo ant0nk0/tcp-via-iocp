@@ -1,8 +1,7 @@
 #pragma once
 
 #include <memory>
-#define WIN32_LEAN_AND_MEAN
-#include <wtypes.h>
+#include <WinSock2.h>
 
 // forward declaration
 struct Overlapped;
@@ -11,14 +10,14 @@ class Connection
 {
 public:
 
-    Connection(const UINT_PTR& socket);
+    Connection(const SOCKET& socket);
     ~Connection();
 
 public:
 
 	static const std::size_t ReadBufferSize = 1024;
 
-	UINT_PTR& GetSocket();
+	SOCKET& GetSocket();
 
 	void* GetReadBuffer();
 	void* GetWriteBuffer();
