@@ -1,6 +1,8 @@
 #pragma once
 
 #include <functional>
+namespace Utils
+{
 
 //! Resource guard based on RAII
 class Guard
@@ -27,3 +29,5 @@ public:
 private:
     ScopeExitFunc _remover;
 };
+
+} // namespace Utils

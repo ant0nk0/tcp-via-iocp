@@ -2,6 +2,9 @@
 
 #include <WinSock2.h>
 
+namespace Networking
+{
+
 class Socket
 {
     bool _inited;
@@ -15,3 +18,5 @@ public:
     unsigned long ResolveAddress(const char* address);
     void Init(const char* address, unsigned port);
 };
+
+} // namespace Networking

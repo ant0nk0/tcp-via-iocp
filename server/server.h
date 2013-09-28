@@ -6,6 +6,9 @@
 #include <mswsock.h>
 #include <functional>
 
+namespace Networking
+{
+
 // forward declarations
 class Connection;
 
@@ -74,3 +77,5 @@ public:
     void SetOnClientConnectedCallback(OnClientConnectedCallback callback);
     void SetOnClientDisconnectedCallback(OnClientDisconnectedCallback callback);
 };
+
+} // namespace Networking

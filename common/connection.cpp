@@ -2,6 +2,9 @@
 #include <WinSock2.h>
 #include "overlapped.h"
 
+namespace Networking
+{
+
 // Connection's pimpl class declaration
 class Connection::Impl
 {
@@ -114,3 +117,5 @@ SOCKET& Connection::GetSocket()
 {
 	return _impl->_socket;
 }
+
+} // namespace Networking

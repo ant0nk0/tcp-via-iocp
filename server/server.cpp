@@ -7,6 +7,9 @@
 #include <WinSock2.h>
 #include <Windows.h>
 
+namespace Networking
+{
+
 Server::Server()
     : _acceptex_func(nullptr)
     , _connections_count()
@@ -242,3 +245,4 @@ void Server::CheckInited() const
     CHECK(!!_acceptex_func, "Server must be initialized before start");
 }
 
+} // namespace Networking

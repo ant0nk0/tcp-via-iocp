@@ -2,6 +2,9 @@
 
 #include <WinSock2.h>
 
+namespace Networking
+{
+
 // forward declarations
 class Connection;
 
@@ -28,3 +31,5 @@ inline Overlapped* CreateOverlapped(Overlapped::Type type)
     overlapped->type = type;
     return overlapped;
 }
+
+} // namespace Networking

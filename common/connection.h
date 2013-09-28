@@ -3,6 +3,9 @@
 #include <memory>
 #include <WinSock2.h>
 
+namespace Networking
+{
+
 // forward declaration
 struct Overlapped;
 
@@ -39,3 +42,5 @@ private:
 	class Impl;
 	std::unique_ptr<Impl> _impl;
 };
+
+} // namespace Networking

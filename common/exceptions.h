@@ -3,6 +3,9 @@
 #include <exception>
 #include <Winsock2.h>
 
+namespace Networking
+{
+
 class wsa_exception : public std::exception
 {
 	char _message[1024];
@@ -35,3 +38,5 @@ inline void CHECK(bool condition, const char* message)
     if (!condition)
         throw check_exception(message);
 }
+
+} // namespace Networking

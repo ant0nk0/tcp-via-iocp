@@ -27,30 +27,30 @@ public:
         server.Run();
     }
 
-    void OnClientConnected(const Connection* conn)
+    void OnClientConnected(const Networking::Connection* conn)
     {
         LOG_DEBUG("New client connected");
         server.ReadAsync(conn);
     }
 
-    void OnClientDisconnected(const Connection* /*conn*/)
+    void OnClientDisconnected(const Networking::Connection* /*conn*/)
     {
         LOG_DEBUG("Client disconnected");
     }
 
-    void OnRead(const Connection* conn, void* data, std::size_t size)
+    void OnRead(const Networking::Connection* conn, void* data, std::size_t size)
     {
         LOG_DEBUG("Got new data. Size: " << size << ", data: " << static_cast<const char*>(data));
         server.WriteAsync(conn, "-", 1);
     }
 
-    void OnWrite(const Connection* conn, std::size_t bytes_transferred)
+    void OnWrite(const Networking::Connection* conn, std::size_t bytes_transferred)
     {
         LOG_DEBUG("Successfully written " << bytes_transferred << " bytes");
         server.ReadAsync(conn);
     }
 
-    Server server;
+    Networking::Server server;
 };
 
 

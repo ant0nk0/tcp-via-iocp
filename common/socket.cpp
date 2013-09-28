@@ -7,6 +7,9 @@
 #include <iostream>
 #include <functional>
 
+namespace Networking
+{
+
 Socket::Socket() 
 	: _inited(false)
 	, _socket()
@@ -27,7 +30,7 @@ void Socket::Init(const char* address, unsigned port)
 	_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	WSA_CHECK(_socket != INVALID_SOCKET, "Failed to initialize socket");
 
-	Guard socket_guard([&] { closesocket(_socket); });
+	Utils::Guard socket_guard([&] { closesocket(_socket); });
 
 	unsigned long resolved_address = ResolveAddress(address);
 	WSA_CHECK(resolved_address != INADDR_NONE, "Failed to resolve address");
@@ -61,3 +64,5 @@ SOCKET& Socket::GetSocket()
 {
 	return _socket;
 }
+
+} // namespace Networking
