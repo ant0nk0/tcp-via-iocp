@@ -18,10 +18,9 @@ App::App()
     server.SetOnWriteCallback(std::bind(&App::OnWrite, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void App::Run()
+void App::Run(const char* address, unsigned port)
 {
-    //server.Init("127.0.0.1", 123);
-    server.Init("", 123);
+    server.Init(address, port);
     server.StartAccept();
 
     std::async(std::launch::async, [&]

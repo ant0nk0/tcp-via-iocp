@@ -13,7 +13,7 @@ public:
     App();
 
     //! Start client
-    void Run();
+    void Run(const char* address, unsigned port);
 
     //! Send next random value to server
     void SendNextValue();

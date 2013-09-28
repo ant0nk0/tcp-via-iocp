@@ -15,10 +15,9 @@ App::App()
     client.SetOnWriteCallback(std::bind(&App::OnWrite, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void App::Run()
+void App::Run(const char* address, unsigned port)
 {
-    //client.Init("127.0.0.1", 123);
-    client.Init("192.168.1.139", 123);
+    client.Init(address, port);
     client.Run();
 }
 
