@@ -26,13 +26,13 @@ public:
     check_exception(const std::string& message) : std::exception(message.c_str()) {}
 };
 
-inline void WSA_CHECK(bool condition, const std::string& message = std::string())
+inline void WSA_CHECK(bool condition, const std::string& message)
 {
     if (!condition)
         throw wsa_exception(message);
 }
 
-inline void CHECK(bool condition, const std::string& message = std::string())
+inline void CHECK(bool condition, const std::string& message)
 {
     if (!condition)
         throw check_exception(message);

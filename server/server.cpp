@@ -1,4 +1,5 @@
 #include "server.h"
+#include "overlapped.h"
 #include <WinSock2.h>
 #include <Windows.h>
 
@@ -78,10 +79,10 @@ void Server::StartAccept()
     (
         _socket.GetSocket(),
         accepted_socket,
-        new_connection->read_buffer,
+        new_connection->GetReadBuffer(),
         0,
         sizeof (sockaddr_in) + 16, sizeof (sockaddr_in) + 16,
-        &dwBytes, reinterpret_cast<LPOVERLAPPED>(new_connection->_accept_overlapped.get())
+        &dwBytes, reinterpret_cast<LPOVERLAPPED>(new_connection->GetAcceptOverlapped())
     );
 
     WSA_CHECK(accept_ex_result == TRUE || WSAGetLastError() == WSA_IO_PENDING, "Failed to call AcceptEx");
@@ -125,7 +126,7 @@ void Server::Run()
                 OnClientDisconnected(overlapped->connection);
 
             delete overlapped->connection;
-            overlapped->connection = nullptr;
+            overlapped = nullptr;
 
             --_connections_count;
 
@@ -135,20 +136,22 @@ void Server::Run()
         if (overlapped->type == Overlapped::Type::Read)
         {
             if (OnRead)
-                OnRead(overlapped->connection, overlapped->connection->read_buffer, bytes_transferred);
+                OnRead(overlapped->connection, overlapped->connection->GetReadBuffer(), bytes_transferred);
+
+			continue;
         }
 
         if (overlapped->type == Overlapped::Type::Write)
         {
-            overlapped->connection->sent_bytes += bytes_transferred;
+            overlapped->connection->SetSentBytes(overlapped->connection->GetSentBytes() + bytes_transferred);
 
-            if (overlapped->connection->sent_bytes < overlapped->connection->total_bytes)
+            if (overlapped->connection->GetSentBytes() < overlapped->connection->GetTotalBytes())
             {
                 // read next
-                overlapped->wsa_buf.len = overlapped->connection->total_bytes - overlapped->connection->sent_bytes;
-                overlapped->wsa_buf.buf = overlapped->connection->write_buffer.get() + overlapped->connection->sent_bytes;
+                overlapped->wsa_buf.len = overlapped->connection->GetTotalBytes() - overlapped->connection->GetSentBytes();
+                overlapped->wsa_buf.buf = reinterpret_cast<CHAR*>(overlapped->connection->GetWriteBuffer()) + overlapped->connection->GetSentBytes();
 
-                if (!WSASend(overlapped->connection->_socket, &overlapped->wsa_buf, 1, &bytes_transferred, 0, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL))
+                if (!WSASend(overlapped->connection->GetSocket(), &overlapped->wsa_buf, 1, &bytes_transferred, 0, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL))
                 {
                     // handle error
                     int t = 0;
@@ -167,15 +170,15 @@ void Server::ReadAsync(const Connection* conn)
 {
     CheckInited();
 
-    Overlapped* overlapped = conn->_read_overlapped.get();
+    Overlapped* overlapped = conn->GetReadOverlapped();
     // read next
-    overlapped->wsa_buf.len = overlapped->connection->read_buffer_size;
-    overlapped->wsa_buf.buf = overlapped->connection->read_buffer;
+    overlapped->wsa_buf.len = overlapped->connection->ReadBufferSize;
+    overlapped->wsa_buf.buf = reinterpret_cast<CHAR*>(overlapped->connection->GetReadBuffer());
 
     DWORD flags = 0;
     DWORD bytes_transferred = 0;
 
-    auto recv_result = WSARecv(overlapped->connection->_socket, &overlapped->wsa_buf, 1, &bytes_transferred, &flags, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL);
+    auto recv_result = WSARecv(overlapped->connection->GetSocket(), &overlapped->wsa_buf, 1, &bytes_transferred, &flags, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL);
     CHECK
     (
 		recv_result == NULL || (recv_result == SOCKET_ERROR && WSAGetLastError() == WSA_IO_PENDING),
@@ -189,20 +192,20 @@ void Server::WriteAsync(const Connection* conn, void* data, std::size_t size)
 
     Connection* mutable_conn = const_cast<Connection*>(conn);
 
-    if (mutable_conn->write_buffer_size < size)
-        mutable_conn->write_buffer.reset(new char[size]);
+    if (mutable_conn->GetWriteBufferSize() < size)
+        mutable_conn->ResizeWriteBuffer(size);
 
-    memcpy(mutable_conn->write_buffer.get(), data, size);
+    memcpy(mutable_conn->GetWriteBuffer(), data, size);
 
-    mutable_conn->sent_bytes = 0;
-    mutable_conn->total_bytes = size;
+    mutable_conn->SetSentBytes(0);
+    mutable_conn->SetTotalBytes(size);
 
-    Overlapped* overlapped = mutable_conn->_write_overlapped.get();
+    Overlapped* overlapped = mutable_conn->GetWriteOverlapped();
     overlapped->wsa_buf.len = size;
-    overlapped->wsa_buf.buf = mutable_conn->write_buffer.get();
+    overlapped->wsa_buf.buf = reinterpret_cast<CHAR*>(mutable_conn->GetWriteBuffer());
 
-    DWORD NumBytesRecv;
-    auto send_result = WSASend(mutable_conn->_socket, &overlapped->wsa_buf, 1, &NumBytesRecv, 0, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL);
+    DWORD bytes;
+    auto send_result = WSASend(mutable_conn->GetSocket(), &overlapped->wsa_buf, 1, &bytes, 0, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL);
 
     CHECK
     (

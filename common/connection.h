@@ -1,29 +1,42 @@
 #pragma once
 
 #include <memory>
-#include <WinSock2.h>
-#include "overlapped.h"
+#define WIN32_LEAN_AND_MEAN
+#include <wtypes.h>
+
+// forward declaration
+struct Overlapped;
 
 class Connection
 {
 public:
 
-    Connection(const SOCKET& socket);
-
+    Connection(const UINT_PTR& socket);
     ~Connection();
 
-    SOCKET _socket;
+public:
 
-    std::unique_ptr<Overlapped> _accept_overlapped;
-    std::unique_ptr<Overlapped> _read_overlapped;
-    std::unique_ptr<Overlapped> _write_overlapped;
+	static const std::size_t ReadBufferSize = 1024;
 
-    static const std::size_t read_buffer_size = 1024;
-    char read_buffer[read_buffer_size];
+	UINT_PTR& GetSocket();
 
-    std::size_t write_buffer_size;
-    std::unique_ptr<char> write_buffer;
+	void* GetReadBuffer();
+	void* GetWriteBuffer();
 
-    std::size_t sent_bytes;
-    std::size_t total_bytes;
+	std::size_t GetWriteBufferSize() const;
+	void ResizeWriteBuffer(std::size_t new_size);
+
+	std::size_t GetSentBytes() const;
+	void SetSentBytes(std::size_t value);
+
+	std::size_t GetTotalBytes() const;
+	void SetTotalBytes(std::size_t value);
+
+	Overlapped* GetAcceptOverlapped() const;
+	Overlapped* GetReadOverlapped() const;
+	Overlapped* GetWriteOverlapped() const;
+
+private:
+	class Impl;
+	std::unique_ptr<Impl> _impl;
 };
