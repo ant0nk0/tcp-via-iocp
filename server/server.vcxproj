@@ -80,12 +80,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\btree.h" />
-    <ClInclude Include="..\common\connection.h" />
-    <ClInclude Include="..\common\exceptions.h" />
-    <ClInclude Include="..\common\guard.h" />
-    <ClInclude Include="..\common\overlapped.h" />
-    <ClInclude Include="..\common\socket.h" />
     <ClInclude Include="server.h" />
   </ItemGroup>
   <ItemGroup>

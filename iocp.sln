@@ -7,6 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "server\server.vcx
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "client\client.vcxproj", "{1064B940-E047-46F4-83C6-9FCF67822313}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DA896395-C443-4068-8778-2A23614A603A} = {DA896395-C443-4068-8778-2A23614A603A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "tests\tests.vcxproj", "{3D1DBAC2-FC83-4E03-B32C-9E07ED22F91F}"
 EndProject
