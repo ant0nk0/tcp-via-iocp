@@ -84,7 +84,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="application.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="tree_with_rms.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

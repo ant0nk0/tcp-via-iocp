@@ -7,16 +7,22 @@ namespace Networking
 
 class Socket
 {
-    bool _inited;
     SOCKET _socket;
+    sockaddr_in _socket_address;
+    bool _inited;
 
 public:
     Socket();
     ~Socket();
 
     SOCKET& GetSocket();
-    unsigned long ResolveAddress(const char* address);
+    sockaddr_in& GetAddress();
+
     void Init(const char* address, unsigned port);
+    void Bind();
+
+private:
+    unsigned long ResolveAddress(const char* address);
 };
 
 } // namespace Networking

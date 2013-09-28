@@ -8,12 +8,12 @@ namespace Networking
 
 class wsa_exception : public std::exception
 {
-	char _message[1024];
+    char _message[1024];
 
     const char* get_message(const char* prefix = "")
     {
-		wsprintfA(_message, "WinSock Error: %s. Error code: %d", prefix, WSAGetLastError());
-		return _message;
+        wsprintfA(_message, "WinSock Error: %s. Error code: %d", prefix, WSAGetLastError());
+        return _message;
     }
 
 public:

@@ -80,12 +80,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="gtest\gtest-all.cc" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tests.cpp" />
     <ClCompile Include="test_tree.cpp" />
   </ItemGroup>

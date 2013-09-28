@@ -36,13 +36,16 @@ void Server::Init(const char* address, unsigned port)
     _completion_port = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
     WSA_CHECK(!!_completion_port, "Failed to create IO Completion port");
 
-    // Init socket and bind em on address and port
+    // Init socket
     _socket.Init(address, port);
+
+    // bind Socket to address and port
+    _socket.Bind();
 
     // Associate the listening socket with the completion port
     WSA_CHECK
     (
-        !!CreateIoCompletionPort((HANDLE) _socket.GetSocket(), _completion_port, (u_long) 0, 0),
+        !!CreateIoCompletionPort((HANDLE) _socket.GetSocket(), _completion_port, 0, 0),
         "Failed to associate listening socket with the IO Completion port"
     );
 
@@ -94,7 +97,7 @@ void Server::StartAccept()
     WSA_CHECK(accept_ex_result == TRUE || WSAGetLastError() == WSA_IO_PENDING, "Failed to call AcceptEx");
 
     // Associate the accept socket with the completion port
-    CreateIoCompletionPort((HANDLE)accepted_socket, _completion_port, (u_long) 0, 0);
+    CreateIoCompletionPort((HANDLE)accepted_socket, _completion_port, 0, 0);
 
     // free connection's ownership
     new_connection.release();
@@ -144,7 +147,7 @@ void Server::Run()
             if (OnRead)
                 OnRead(overlapped->connection, overlapped->connection->GetReadBuffer(), bytes_transferred);
 
-			continue;
+            continue;
         }
 
         if (overlapped->type == Overlapped::Type::Write)
@@ -187,7 +190,7 @@ void Server::ReadAsync(const Connection* conn)
     auto recv_result = WSARecv(overlapped->connection->GetSocket(), &overlapped->wsa_buf, 1, &bytes_transferred, &flags, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL);
     CHECK
     (
-		recv_result == NULL || (recv_result == SOCKET_ERROR && WSAGetLastError() == WSA_IO_PENDING),
+        recv_result == NULL || (recv_result == SOCKET_ERROR && WSAGetLastError() == WSA_IO_PENDING),
         "Failed to receive data"
     );
 }
@@ -215,7 +218,7 @@ void Server::WriteAsync(const Connection* conn, void* data, std::size_t size)
 
     CHECK
     (
-		send_result == NULL || (send_result == SOCKET_ERROR && WSAGetLastError() == WSA_IO_PENDING),
+        send_result == NULL || (send_result == SOCKET_ERROR && WSAGetLastError() == WSA_IO_PENDING),
         "Failed to send data"
     );
 }

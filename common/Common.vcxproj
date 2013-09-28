@@ -15,6 +15,7 @@
     <ClInclude Include="connection.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="guard.h" />
+    <ClInclude Include="types.h" />
     <ClInclude Include="overlapped.h" />
     <ClInclude Include="socket.h" />
   </ItemGroup>
