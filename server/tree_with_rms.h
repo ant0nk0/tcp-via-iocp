@@ -30,6 +30,11 @@ public:
         return _rms;
     }
 
+    Networking::Types::ResultType GetRms() const
+    {
+        return _rms; 
+    }
+
 private:
     Networking::Types::ResultType _rms;
     typedef Utils::BinaryTree<unsigned> BinaryTreeOfUnsigned;

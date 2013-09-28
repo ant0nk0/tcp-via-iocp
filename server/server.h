@@ -1,6 +1,8 @@
 #pragma once
 
 #include "socket.h"
+#include "winsock_initializer.h"
+
 #include <cstddef>
 #include <WinSock2.h>
 #include <mswsock.h>
@@ -15,23 +17,17 @@ class Connection;
 //! Asynchronous Tcp server based on IO Completion ports
 class Server
 {
+    //! Helper for winsock initialization
+    WinSockInitializer::Ptr _winsock;
+
     //! Listening socket
     Socket _socket;
-
-    //! Current connections
-    std::size_t _connections_count;
 
     //! Completion port handle
     HANDLE _completion_port;
 
     //! AcceptEx function pointer
     LPFN_ACCEPTEX _acceptex_func;
-    
-    //! WSA init data
-    WSADATA _wsa_data;
-
-    //! WSA init flag
-    bool _wsa_inited;
 
     //! OnWrite callback called when data was successfully transferred via socket
     typedef std::function<void(const Connection*, std::size_t)> OnWriteCallback;

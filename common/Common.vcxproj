@@ -15,9 +15,11 @@
     <ClInclude Include="connection.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="guard.h" />
+    <ClInclude Include="log.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="overlapped.h" />
     <ClInclude Include="socket.h" />
+    <ClInclude Include="winsock_initializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="connection.cpp" />

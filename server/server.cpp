@@ -11,24 +11,21 @@ namespace Networking
 {
 
 Server::Server()
-    : _acceptex_func(nullptr)
-    , _connections_count()
+    : _winsock(WinSockInitializer::Create())
+    , _acceptex_func(nullptr)
 {
-    _wsa_inited = !WSAStartup(MAKEWORD(2, 2), &_wsa_data);
 }
 
 Server::~Server()
 {
-    if (_wsa_inited)
-        WSACleanup();
 }
 
 void Server::Init(const char* address, unsigned port)
 {
-    // Check WSA version
+    // Check winsock initialized
     WSA_CHECK
     (
-        LOBYTE(_wsa_data.wVersion) == 2 && HIBYTE(_wsa_data.wVersion) == 2,
+        _winsock->IsInitialized(),
         "Unsupported version of WinSock"
     );
 
@@ -81,9 +78,8 @@ void Server::StartAccept()
     WSA_CHECK(accepted_socket != INVALID_SOCKET, "Failed to initialize the socket for connection accept");
 
     std::unique_ptr<Connection> new_connection(new Connection(accepted_socket));
-    ++_connections_count;
 
-    DWORD dwBytes = 0;
+    DWORD bytes = 0;
     const int accept_ex_result = _acceptex_func
     (
         _socket.GetSocket(),
@@ -91,7 +87,7 @@ void Server::StartAccept()
         new_connection->GetReadBuffer(),
         0,
         sizeof (sockaddr_in) + 16, sizeof (sockaddr_in) + 16,
-        &dwBytes, reinterpret_cast<LPOVERLAPPED>(new_connection->GetAcceptOverlapped())
+        &bytes, reinterpret_cast<LPOVERLAPPED>(new_connection->GetAcceptOverlapped())
     );
 
     WSA_CHECK(accept_ex_result == TRUE || WSAGetLastError() == WSA_IO_PENDING, "Failed to call AcceptEx");
@@ -102,7 +98,6 @@ void Server::StartAccept()
     // free connection's ownership
     new_connection.release();
 }
-
 
 void Server::Run()
 {
@@ -137,8 +132,6 @@ void Server::Run()
             delete overlapped->connection;
             overlapped = nullptr;
 
-            --_connections_count;
-
             continue;
         }
 
@@ -160,11 +153,12 @@ void Server::Run()
                 overlapped->wsa_buf.len = overlapped->connection->GetTotalBytes() - overlapped->connection->GetSentBytes();
                 overlapped->wsa_buf.buf = reinterpret_cast<CHAR*>(overlapped->connection->GetWriteBuffer()) + overlapped->connection->GetSentBytes();
 
-                if (!WSASend(overlapped->connection->GetSocket(), &overlapped->wsa_buf, 1, &bytes_transferred, 0, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL))
-                {
-                    // handle error
-                    int t = 0;
-                }
+                auto send_result = WSASend(overlapped->connection->GetSocket(), &overlapped->wsa_buf, 1, &bytes_transferred, 0, reinterpret_cast<LPWSAOVERLAPPED>(overlapped), NULL);
+                CHECK
+                (
+                    send_result == NULL || (send_result == SOCKET_ERROR && WSAGetLastError() == WSA_IO_PENDING),
+                    "Failed to send data"
+                );
             }
             else
             {

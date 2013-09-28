@@ -1,11 +1,11 @@
 #include "application.h"
+#include "log.h"
 
 int main(int argc, char* argv[])
 {
     try
     {
-        App app;
-        app.Run();
+        App().Run();
     }
     catch (const std::exception& e)
     {

@@ -89,6 +89,7 @@
     <ClInclude Include="tree_with_rms.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>

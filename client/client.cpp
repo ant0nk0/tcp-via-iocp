@@ -11,22 +11,20 @@ namespace Networking
 {
 
 Client::Client()
+    : _winsock(WinSockInitializer::Create())
 {
-    _wsa_inited = !WSAStartup(MAKEWORD(2, 2), &_wsa_data);
 }
 
 Client::~Client()
 {
-    if (_wsa_inited)
-        WSACleanup();
 }
 
 void Client::Init(const char* address, unsigned port)
 {
-    // Check WSA version
+    // Check WinSock initialized
     WSA_CHECK
     (
-        LOBYTE(_wsa_data.wVersion) == 2 && HIBYTE(_wsa_data.wVersion) == 2,
+        _winsock->IsInitialized(),
         "Unsupported version of WinSock"
     );
 

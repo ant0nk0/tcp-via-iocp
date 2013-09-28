@@ -4,7 +4,6 @@
 #include "connection.h"
 
 #include <memory>
-#include <iostream>
 #include <functional>
 
 namespace Networking
