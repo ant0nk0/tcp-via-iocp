@@ -2,7 +2,7 @@
 
 #include <WinSock2.h>
 
-//! This class allows to initialize winsock
+//! This class helps initialize winsock
 class WinSockInitializer
 {
 public:
@@ -24,7 +24,7 @@ public:
     }
 
 private:
-    //! Flag of successfull startup
+    //! Flag of successfull WSA startup
     bool _wsa_inited;
 
     //! Hi version of WSA

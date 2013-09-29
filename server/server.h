@@ -1,7 +1,7 @@
 #pragma once
 
-#include "socket.h"
-#include "winsock_initializer.h"
+#include "context_callbacks.h"
+#include "acceptor.h"
 
 #include <cstddef>
 #include <WinSock2.h>
@@ -11,44 +11,17 @@
 namespace Networking
 {
 
-// forward declarations
 class Connection;
+class Context;
 
 //! Asynchronous Tcp server based on IO Completion ports
-class Server
+class Server : public CallbacksExecutor
 {
-    //! Helper for winsock initialization
-    WinSockInitializer _winsock;
-
-    //! Listening socket
-    Socket _socket;
-
-    //! Completion port handle
-    HANDLE _completion_port;
-
-    //! AcceptEx function pointer
-    LPFN_ACCEPTEX _acceptex_func;
-
-    //! OnWrite callback called when data was successfully transferred via socket
-    typedef std::function<void(const Connection*, std::size_t)> OnWriteCallback;
-    OnWriteCallback OnWrite;
-
-    //! OnRead callback called when data was successfully read from socket
-    typedef std::function<void(const Connection*, void*, std::size_t)> OnReadCallback;
-    OnReadCallback OnRead;
-
-    //! OnClientConnected callback called when new client connected to listening socket
-    typedef std::function<void(const Connection*)> OnClientConnectedCallback;
-    OnClientConnectedCallback OnClientConnected;
-
-    //! OnClientDisconnected callback called when client closed connection
-    typedef std::function<void(const Connection*)> OnClientDisconnectedCallback;
-    OnClientDisconnectedCallback OnClientDisconnected;
-
 public:
-    Server();
+    Server(Context& context);
     ~Server();
 
+public:
     //! Initialization. Must be called before any other method
     void Init(const char* address, unsigned port);
 
@@ -64,14 +37,12 @@ public:
     //! Run the server
     void Run();
 
-    //! Check server was initialized
-    void CheckInited() const;
+private:
+    //! Networking context
+    Context& _context;
 
-public:
-    void SetOnWriteCallback(OnWriteCallback callback);
-    void SetOnReadCallback(OnReadCallback callback);
-    void SetOnClientConnectedCallback(OnClientConnectedCallback callback);
-    void SetOnClientDisconnectedCallback(OnClientDisconnectedCallback callback);
+    //! New connections acceptor
+    Acceptor _acceptor;
 };
 
 } // namespace Networking

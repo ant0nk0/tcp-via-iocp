@@ -6,8 +6,11 @@
 class TreeWithRms
 {
 public:
-    TreeWithRms() : _rms(0) {}
+    TreeWithRms() : _rms(0)
+    {
+    }
 
+    //! Tries to add new value to the tree. If succeeded - calculate new RMS, otherwise return old RMS
     Networking::Types::ResultType AddNewValueAndCalculateRms(Networking::Types::InputType new_value)
     {
         if (!_tree.Add(new_value))
@@ -30,6 +33,7 @@ public:
         return _rms;
     }
 
+    //! Get current RMS
     Networking::Types::ResultType GetRms() const
     {
         return _rms; 

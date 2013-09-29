@@ -8,7 +8,8 @@ namespace Networking
 
 struct Overlapped;
 
-//! Stores information about incoming connection, read/write buffers and system overlapped
+//! Stores information about incoming or outgoing connection,
+//! read/write buffers and system overlapped
 class Connection
 {
 public:
@@ -45,6 +46,9 @@ public:
 
     //! Sets how many bytes will be sent by last AsyncWrite call
     void SetTotalBytes(std::size_t value);
+
+    // Gets system overlapped for connection establishing request
+    Overlapped* GetConnectOverlapped() const;
 
     // Gets system overlapped for connection accept request
     Overlapped* GetAcceptOverlapped() const;

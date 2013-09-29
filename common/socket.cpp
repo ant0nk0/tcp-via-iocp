@@ -54,6 +54,23 @@ void Socket::Bind()
     );
 }
 
+void Socket::BindBeforeConnect()
+{
+    // ConnectEx requires the socket to be initially bound
+    struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
+
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = INADDR_ANY;
+    addr.sin_port = 0;
+
+    WSA_CHECK
+    (
+        !bind(_socket, reinterpret_cast<SOCKADDR*>(&addr), sizeof(addr)),
+        "Failed to bound socket"
+    );
+}
+
 unsigned long Socket::ResolveAddress(const char* address)
 {
     if (!strlen(address))
@@ -63,7 +80,7 @@ unsigned long Socket::ResolveAddress(const char* address)
     return inet_addr(inet_ntoa(*reinterpret_cast<struct in_addr *>(*host->h_addr_list)));
 }
 
-SOCKET& Socket::GetSocket()
+SOCKET& Socket::Native()
 {
     return _socket;
 }

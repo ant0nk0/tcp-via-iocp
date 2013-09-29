@@ -4,10 +4,9 @@
 #include "connection.h"
 #include "types.h"
 #include "log.h"
-
 #include <functional>
 
-App::App()
+App::App() : client(context)
 {
     client.SetOnConnectedCallback(std::bind(&App::OnConnected, this, std::placeholders::_1));
     client.SetOnDisconnectedCallback(std::bind(&App::OnDisconnected, this, std::placeholders::_1));
@@ -17,14 +16,17 @@ App::App()
 
 void App::Run(const char* address, unsigned port)
 {
+    LOG_DEBUG("Client started");
+
     client.Init(address, port);
     client.Run();
 }
 
-void App::OnConnected(const Networking::Connection* /*conn*/)
+void App::OnConnected(const Networking::Connection* conn)
 {
     LOG_DEBUG("Connected to server");
-    SendNextValue();
+
+    SendNextValue(conn);
 }
 
 void App::OnDisconnected(const Networking::Connection* /*conn*/)
@@ -34,23 +36,22 @@ void App::OnDisconnected(const Networking::Connection* /*conn*/)
 
 void App::OnRead(const Networking::Connection* conn, void* data, std::size_t size)
 {
-//    if (size != sizeof(Networking::Types::ResultType))
-//        return;
-
     auto value = *reinterpret_cast<Networking::Types::ResultType*>(data);
+
     LOG_DEBUG("Got new data. Size: " << size << ", data: " << value);
 
-    SendNextValue();
+    SendNextValue(conn);
 }
 
-void App::SendNextValue()
+void App::SendNextValue(const Networking::Connection* conn)
 {
     Networking::Types::InputType next = rand() % 1024;
-    client.AsyncWrite(&next, sizeof(next));
+    client.AsyncWrite(conn, &next, sizeof(next));
 }
 
 void App::OnWrite(const Networking::Connection* conn, std::size_t bytes_transferred)
 {
     LOG_DEBUG("Successfully written " << bytes_transferred << " bytes");
-    client.AsyncRead();
+
+    client.AsyncRead(conn);
 }

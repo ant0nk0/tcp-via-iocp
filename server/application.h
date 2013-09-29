@@ -2,6 +2,7 @@
 
 #include "tree_with_rms.h"
 #include "server.h"
+#include "context.h"
 
 namespace Networking { class Connection; }
 
@@ -10,7 +11,7 @@ class App
 public:
     App();
 
-    //! Start server
+    //! Start the server
     void Run(const char* address, unsigned port);
 
     //! Async call handlers
@@ -20,6 +21,9 @@ public:
     void OnWrite(const Networking::Connection* conn, std::size_t bytes_transferred);
 
 private:
+    //! Networking context
+    Networking::Context context;
+
     //! Tcp server implementation
     Networking::Server server;
 

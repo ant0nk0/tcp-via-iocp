@@ -6,14 +6,13 @@
 #include "types.h"
 #include "tree_with_rms.h"
 #include "log.h"
-
 #include <functional>
 #include <future>
 
-App::App()
+App::App() : server(context)
 {
-    server.SetOnClientConnectedCallback(std::bind(&App::OnClientConnected, this, std::placeholders::_1));
-    server.SetOnClientDisconnectedCallback(std::bind(&App::OnClientDisconnected, this, std::placeholders::_1));
+    server.SetOnConnectedCallback(std::bind(&App::OnClientConnected, this, std::placeholders::_1));
+    server.SetOnDisconnectedCallback(std::bind(&App::OnClientDisconnected, this, std::placeholders::_1));
     server.SetOnReadCallback(std::bind(&App::OnRead, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     server.SetOnWriteCallback(std::bind(&App::OnWrite, this, std::placeholders::_1, std::placeholders::_2));
 }

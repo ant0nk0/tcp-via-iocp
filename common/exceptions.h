@@ -6,6 +6,7 @@
 namespace Networking
 {
 
+//! Exception containing Error message and WSA Error if some operation fails
 class wsa_exception : public std::exception
 {
     char _message[1024];
@@ -21,6 +22,7 @@ public:
     wsa_exception(const char* prefix) : std::exception(get_message(prefix)) { }
 };
 
+//! Plain exception, for non-winsock operations 
 class check_exception : public std::exception
 {
 public:

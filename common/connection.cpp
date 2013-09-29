@@ -13,15 +13,26 @@ public:
     ~Impl();
 
 public:
+    //! Socket associated with connection
     SOCKET _socket;
+
+    //! Static read buffer
     char _read_buffer[ReadBufferSize];
 
+    //! Size of current write buffer
     std::size_t _write_buffer_size;
+    
+    //! Dynamic write buffer
     std::unique_ptr<char> _write_buffer;
 
+    //! Bytes already sent since last AsyncWrite call
     std::size_t _sent_bytes;
+
+    //! Bytes need to be sent since last AsyncWrite call
     std::size_t _total_bytes;
 
+    //! Typed overlapped structs
+    std::unique_ptr<Overlapped> _connect_overlapped;
     std::unique_ptr<Overlapped> _accept_overlapped;
     std::unique_ptr<Overlapped> _read_overlapped;
     std::unique_ptr<Overlapped> _write_overlapped;
@@ -29,6 +40,7 @@ public:
 
 Connection::Impl::Impl(const SOCKET& socket, Connection* owner) 
     : _socket(socket)
+    , _connect_overlapped(CreateOverlapped(Overlapped::Connect))
     , _accept_overlapped(CreateOverlapped(Overlapped::Accept))
     , _read_overlapped(CreateOverlapped(Overlapped::Read))
     , _write_overlapped(CreateOverlapped(Overlapped::Write))
@@ -37,6 +49,7 @@ Connection::Impl::Impl(const SOCKET& socket, Connection* owner)
     , _write_buffer(nullptr)
     , _write_buffer_size()
 {
+    _connect_overlapped->connection = owner;
     _accept_overlapped->connection = owner;
     _read_overlapped->connection = owner;
     _write_overlapped->connection = owner;
@@ -70,6 +83,11 @@ Overlapped* Connection::GetReadOverlapped() const
 Overlapped* Connection::GetAcceptOverlapped() const
 {
     return _impl->_accept_overlapped.get();
+}
+
+Overlapped* Connection::GetConnectOverlapped() const
+{
+    return _impl->_connect_overlapped.get();
 }
 
 void Connection::SetTotalBytes(std::size_t value)
