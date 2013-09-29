@@ -1,5 +1,6 @@
 #pragma once
 
+#include "noncopyable.h"
 #include <WinSock2.h>
 #include <mswsock.h>
 
@@ -10,7 +11,7 @@ class Context;
 
 //! Extending 'Context' and helps to start async Accept operation
 //! (used on server side)
-class Acceptor
+class Acceptor : Utils::NonCopyable
 {
 public:
     Acceptor(Context& context);

@@ -28,5 +28,5 @@ private:
     Networking::Server server;
 
     //! Binary tree with rms
-    TreeWithRms tree;
+    Utils::TreeWithRms tree;
 };

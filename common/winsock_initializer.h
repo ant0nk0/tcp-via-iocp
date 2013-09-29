@@ -1,9 +1,10 @@
 #pragma once
 
+#include "noncopyable.h"
 #include <WinSock2.h>
 
 //! This class helps initialize winsock
-class WinSockInitializer
+class WinSockInitializer : Utils::NonCopyable
 {
 public:
     WinSockInitializer()

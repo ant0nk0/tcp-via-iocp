@@ -1,5 +1,6 @@
 #pragma once
 
+#include "noncopyable.h"
 #include <memory>
 #include <WinSock2.h>
 
@@ -10,7 +11,7 @@ struct Overlapped;
 
 //! Stores information about incoming or outgoing connection,
 //! read/write buffers and system overlapped
-class Connection
+class Connection : Utils::NonCopyable
 {
 public:
     Connection(const SOCKET& socket);

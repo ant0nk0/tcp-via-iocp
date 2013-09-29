@@ -20,6 +20,7 @@
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="guard.h" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="noncopyable.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="overlapped.h" />
     <ClInclude Include="socket.h" />

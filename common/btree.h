@@ -1,5 +1,6 @@
 #pragma once
 
+#include "noncopyable.h"
 #include <functional>
 
 namespace Utils
@@ -7,7 +8,7 @@ namespace Utils
     //! Simple binary tree. Can add unique elements and walk around the elements
     //! Smart pointers not used for performance purposes
     template<typename T>
-    class BinaryTree
+    class BinaryTree : NonCopyable
     {
     public:
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "noncopyable.h"
 #include <WinSock2.h>
 
 namespace Networking
@@ -8,7 +9,7 @@ namespace Networking
 class Connection;
 
 //! Overlapped structure, extended with helper fields
-struct Overlapped
+struct Overlapped : Utils::NonCopyable
 {
     enum Type
     {

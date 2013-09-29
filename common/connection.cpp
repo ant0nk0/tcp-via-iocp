@@ -1,6 +1,6 @@
 #include "connection.h"
-#include <WinSock2.h>
 #include "overlapped.h"
+#include <WinSock2.h>
 
 namespace Networking
 {

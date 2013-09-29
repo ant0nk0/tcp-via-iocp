@@ -2,6 +2,7 @@
 
 #include "context_callbacks.h"
 #include "acceptor.h"
+#include "noncopyable.h"
 
 #include <cstddef>
 #include <WinSock2.h>
@@ -15,7 +16,7 @@ class Connection;
 class Context;
 
 //! Asynchronous Tcp server based on IO Completion ports
-class Server : public CallbacksExecutor
+class Server : public CallbacksExecutor, Utils::NonCopyable
 {
 public:
     Server(Context& context);

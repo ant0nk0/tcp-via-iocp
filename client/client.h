@@ -4,6 +4,7 @@
 #include "winsock_initializer.h"
 #include "context.h"
 #include "connector.h"
+#include "noncopyable.h"
 
 #include <cstddef>
 #include <WinSock2.h>
@@ -16,7 +17,7 @@ namespace Networking
 class Connection;
 
 //! Asynchronous Tcp client based on IO Completion ports
-class Client : public CallbacksExecutor
+class Client : public CallbacksExecutor, Utils::NonCopyable
 {
     Context& _context;
     Connector _connector;

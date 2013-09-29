@@ -1,12 +1,13 @@
 #pragma once
 
+#include "noncopyable.h"
 #include <WinSock2.h>
 
 namespace Networking
 {
 
 //! Socket helper class. Stores native socket and associated address
-class Socket
+class Socket : Utils::NonCopyable
 {
 public:
     Socket();

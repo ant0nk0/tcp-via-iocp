@@ -1,11 +1,12 @@
 #pragma once
+#include "noncopyable.h"
 #include <functional>
 
 namespace Utils
 {
 
 //! Resource guard based on RAII
-class Guard
+class Guard : NonCopyable
 {
 public:
     typedef std::function<void()> ScopeExitFunc;

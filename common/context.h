@@ -6,6 +6,7 @@
 #include "winsock_initializer.h"
 #include "overlapped.h"
 #include "context_callbacks.h"
+#include "noncopyable.h"
 
 #include <functional>
 
@@ -17,7 +18,7 @@ class Connector;
 
 //! Main Network context.
 //! Processes main async operations (AsyncRead, AsyncWrite) and handles all processed operations
-class Context : public CallbacksHolder
+class Context : public CallbacksHolder, Utils::NonCopyable
 {
     friend Acceptor;
     friend Connector;
@@ -43,6 +44,11 @@ private:
 
     //! Get completion port handle
     HANDLE GetCompletionPort();
+
+private:
+    // non copyable
+    Context(const Context&);
+    void operator=(const Context&);
 
 private:
     //! Helper for winsock initialization
