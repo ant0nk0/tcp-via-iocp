@@ -3,7 +3,6 @@
 #include "exceptions.h"
 #include "connection.h"
 
-#include <memory>
 #include <functional>
 
 namespace Networking

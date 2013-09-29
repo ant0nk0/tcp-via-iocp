@@ -7,7 +7,6 @@
 #include "overlapped.h"
 #include "context_callbacks.h"
 
-#include <memory>
 #include <functional>
 
 namespace Networking

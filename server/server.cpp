@@ -5,7 +5,6 @@
 #include "acceptor.h"
 #include "context.h"
 
-#include <memory>
 #include <WinSock2.h>
 #include <Windows.h>
 

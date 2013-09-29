@@ -8,7 +8,6 @@
 #include <cstddef>
 #include <WinSock2.h>
 #include <functional>
-#include <memory>
 #include "context_callbacks.h"
 
 namespace Networking
