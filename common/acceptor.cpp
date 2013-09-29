@@ -62,7 +62,7 @@ namespace Networking
         WSA_CHECK(accept_ex_result == TRUE || WSAGetLastError() == WSA_IO_PENDING, "Failed to call AcceptEx");
 
         // Associate the accept socket with the completion port
-        CreateIoCompletionPort((HANDLE)accepted_socket, _context.GetCompletionPort(), 0, 0);
+        CreateIoCompletionPort(reinterpret_cast<HANDLE>(accepted_socket), _context.GetCompletionPort(), 0, 0);
 
         // free connection's ownership
         new_connection.release();
