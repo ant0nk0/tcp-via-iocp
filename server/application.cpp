@@ -8,6 +8,7 @@
 #include "log.h"
 #include <functional>
 #include <future>
+#include <iostream>
 
 App::App() : server(context)
 {
