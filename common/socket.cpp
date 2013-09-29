@@ -46,6 +46,18 @@ void Socket::Bind()
 {
     CHECK(_inited, "Socket must be initialized before Bind() call");
 
+    const unsigned so_reuseaddr = 1;
+    WSA_CHECK
+    (
+        !setsockopt
+        (
+            _socket, SOL_SOCKET, SO_REUSEADDR,
+            reinterpret_cast<const char*>(&so_reuseaddr),
+            sizeof(so_reuseaddr)
+        ),
+        "Failed to reuse address"
+    );
+
     WSA_CHECK
     (
         !bind(_socket, reinterpret_cast<SOCKADDR*>(&_socket_address), sizeof(_socket_address)),
